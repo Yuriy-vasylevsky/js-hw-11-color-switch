@@ -4,29 +4,30 @@ const startBtn = document.querySelector(`button[data-action="start"]`);
 const stopBtn = document.querySelector(`button[data-action="stop"]`);
 const body = document.querySelector(`body`);
 
-startBtn.addEventListener(`click`, startChangeColor);
-stopBtn.addEventListener(`click`, stopChangeColor);
-
-const randomIntegerFromInterval = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-// let index = randomIntegerFromInterval(0, 5);
-// console.log(index);
-
-// console.log(colors[index]);
-
-function startChangeColor() {
-  // body.style.backgroundColor = colors[index];
-
-  const timerId = setInterval(() => {
-    let index = randomIntegerFromInterval(0, 5);
-    body.style.backgroundColor = colors[index];
-  }, 1000);
+class ColorSwitch {
+  constructor({}) {
+    this.intervalid = null;
+    this.isActive = false;
+  }
+  startChangeColor() {
+    if (this.isActive) {
+      return;
+    }
+    const randomIntegerFromInterval = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+    this.intervalid = setInterval(() => {
+      this.isActive = true;
+      let index = randomIntegerFromInterval(0, 5);
+      body.style.backgroundColor = colors[index];
+    }, 1000);
+  }
+  stopChangeColor() {
+    this.isActive = false;
+    clearTimeout(this.intervalid);
+  }
 }
+const colorSwitch = new ColorSwitch({});
 
-console.log('🚀 ~ file: index.js ~ line 26 ~ timerId ~ timerId', timerId);
-
-function stopChangeColor(timerId) {
-  clearTimeout(timerId);
-}
+startBtn.addEventListener(`click`, colorSwitch.startChangeColor.bind(colorSwitch));
+stopBtn.addEventListener(`click`, colorSwitch.stopChangeColor.bind(colorSwitch));
